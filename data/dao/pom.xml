@@ -11,13 +11,13 @@
     </parent>
 
     <artifactId>data-dao</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>Bazaarvoice Commons Data DAO</name>
 
     <scm>
-        <connection>scm:svn:https://dev.bazaarvoice.com/svn/bvc/commons/trunk/data/dao</connection>
+        <connection>scm:svn:https://dev.bazaarvoice.com/svn/bvc/commons/tags/data-dao-1.0</connection>
     </scm>
 
     <properties>
