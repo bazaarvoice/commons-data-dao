@@ -17,7 +17,7 @@
     <name>Bazaarvoice Commons Data DAO</name>
 
     <scm>
-      <connection>scm:git@github.com:bazaarvoice/commons-data-dao</connection>
+      <connection>scm:git:git@github.com:bazaarvoice/commons-data-dao</connection>
     </scm>
 
     <properties>
