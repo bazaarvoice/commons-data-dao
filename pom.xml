@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.bazaarvoice.commons.data</groupId>
         <artifactId>data-parent</artifactId>
-        <version>3.2</version>
+        <version>3.6</version>
     </parent>
 
     <artifactId>data-dao</artifactId>
@@ -26,7 +26,7 @@
         <dependency>
             <groupId>com.bazaarvoice.commons.data</groupId>
             <artifactId>data-model</artifactId>
-            <version>1.7</version>
+            <version>1.9</version>
         </dependency>
 
         <!-- Commons -->
