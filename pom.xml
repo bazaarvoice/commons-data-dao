@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>data-dao</artifactId>
-    <version>1.6-SNAPSHOT</version>
+    <version>1.6</version>
     <packaging>jar</packaging>
 
     <name>Bazaarvoice Commons Data DAO</name>
