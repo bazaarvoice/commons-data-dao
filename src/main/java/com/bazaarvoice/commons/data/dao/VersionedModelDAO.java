@@ -10,4 +10,11 @@ public interface VersionedModelDAO<T extends VersionedModel> extends ModelDAO<T>
     @Nullable
     T get(String objectID, @Nullable String version);
 
+    /**
+     * Delete versioned document.
+     * @param version   if no version passed then document and all it's versions are deleted,
+     *                  otherwise single version is deleted.
+     */
+    void deleteByID(String objectID, @Nullable String version);
+
 }
