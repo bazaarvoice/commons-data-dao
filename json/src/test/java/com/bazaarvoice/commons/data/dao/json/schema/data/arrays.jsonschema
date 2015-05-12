@@ -1,0 +1,85 @@
+{
+    "$schema": "http://json-schema.org/draft-03/schema",
+
+    "id": "arrays.jsonschema",
+
+    "type": "object",
+    "properties": {
+        "aProp": {
+            "type": "array",
+            "items": {"type": "any"}
+        },
+
+        "aPropStrings": {
+            "type": "array",
+            "items": { "type": "string" }
+        },
+
+        "aPropStringsMinMax": {
+            "type": "array",
+            "items": {"type": "string"},
+            "minItems": 4,
+            "maxItems": 8
+        },
+
+        "aPropStringsNoDupes": {
+            "type": "array",
+            "items": {"type": "string"},
+            "uniqueItems": true
+        },
+
+        "aPropUnion": {
+            "type": "array",
+            "items": { "type": [ "string", "number", "null" ] }
+        },
+
+        "aProp2Tuple": {
+            "type": "array",
+            "items": [ { "type": "string" }, { "type": "number" } ]
+        },
+
+        "aProp2TupleMinMax": {
+            "type": "array",
+            "items": [
+                {"type": "string"},
+                {"type": "number"}
+            ],
+            "minItems": 5,
+            "maxItems": 11
+        },
+
+        "aProp2TupleNoDupes": {
+            "type": "array",
+            "items": [
+                {"type": "string"},
+                {"type": "number"}
+            ],
+            "uniqueItems": true
+        },
+
+        "aProp3Tuple": {
+            "type": "array",
+            "items": [ { "type": "string" }, { "type": "number" }, { "type": "boolean" } ],
+            "additionalItems": false
+        },
+
+        "aPropAdditionalItems": {
+            "type": "array",
+            "items": [ { "type": "string" }, { "type": "number" } ],
+            "additionalItems": {"type": "string"}
+        },
+
+        "aPropObjects": {
+            "type": "array",
+
+            "items": {
+                "type": "object",
+
+                "properties": {
+                    "sSubProp": {"type": "string"},
+                    "nSubProp": {"type": "number"}
+                }
+            }
+        }
+    }
+}

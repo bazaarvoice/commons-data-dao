@@ -1,0 +1,53 @@
+{
+    "$schema": "http://json-schema.org/draft-03/schema",
+
+    "id": "union.jsonschema",
+
+    "type": "object",
+    "properties": {
+        "snProp": {
+            "required": true,
+            "type": [ "string", "number", "null" ]
+        },
+
+        "allProp": {
+            "type": [ "string", "number", "integer", "boolean", "object", "array", "null", "any" ],
+            "required": true,
+
+            "properties": {
+                "sSubProp": {
+                    "type": "string"
+                }
+            },
+
+            "items": {
+                "type": ["string", "number"]
+            }
+        },
+
+        "complexProp": {
+            "type": [ "string", "number", {
+                "id": "sSubSchema",
+                "type": "object",
+                "properties": {
+                    "sSubProp": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            }, {
+                "id": "nSubSchema",
+                "type": "object",
+                "properties": {
+                    "nSubProp": {
+                        "type": "number"
+                    }
+                },
+                "additionalProperties": false
+            }],
+            "required": true,
+
+            "enum": [ "a", "b", "c", 1, 2, 3 ]
+        }
+    }
+}

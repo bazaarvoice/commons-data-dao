@@ -1,0 +1,4 @@
+The Data Model module contains generally useful classes for building up models.
+
+It is preferred that the abstract model classes and interfaces use only types that are available in the client of Google Web Toolkit so they can be transferred
+appropriately. If necessary, client-side emulations may be provided for any classes not available.

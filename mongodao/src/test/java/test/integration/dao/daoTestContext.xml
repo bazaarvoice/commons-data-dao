@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- The application core components for the DAOs -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <!-- Setup all JDK 1.5+ annotation support (@Required, etc.) -->
+    <context:annotation-config/>
+
+    <!-- Users -->
+    <bean id="com.bazaarvoice.commons.data.dao.TestUserDAO" class="test.integration.dao.impl.TestDummyUserDAORW"/>
+
+    <!-- Auditing -->
+    <bean id="com.bazaarvoice.commons.data.dao.audit.GenericAuditActionDAORW" class="com.bazaarvoice.commons.data.dao.mongo.audit.GenericAuditActionDAORWMongo">
+        <property name="mongoAccessService" ref="com.bazaarvoice.commons.data.services.MongoAccessService"/>
+        <property name="primaryCollectionName" value="audit"/>
+        <property name="modelMarshaller">
+            <bean class="com.bazaarvoice.commons.data.dao.mongo.audit.DelegatingAuditActionMarshallerMongo">
+                <property name="marshallers">
+                    <list>
+                        <!-- Specific action type marshallers -->
+                        <bean class="test.integration.dao.impl.TestUpdateAuditActionMarshallerMongo" parent="com.bazaarvoice.commons.data.dao.audit.BaseAuditActionMongoMarshaller"/>
+
+                        <!-- Generic should always be last since it supports all -->
+                        <bean class="com.bazaarvoice.commons.data.dao.mongo.audit.GenericAuditActionMarshallerMongo" parent="com.bazaarvoice.commons.data.dao.audit.BaseAuditActionMongoMarshaller"/>
+                    </list>
+                </property>
+                <property name="fields" ref="com.bazaarvoice.commons.data.dao.audit.AuditActionMongoFields"/>
+                <property name="classToTypeConverter" ref="com.bazaarvoice.commons.data.dao.audit.AuditActionClassToTypeConverter"/>
+            </bean>
+        </property>
+        <property name="fields" ref="com.bazaarvoice.commons.data.dao.audit.AuditActionMongoFields"/>
+        <property name="auditActionClassToTypeConverter" ref="com.bazaarvoice.commons.data.dao.audit.AuditActionClassToTypeConverter"/>
+    </bean>
+
+    <bean abstract="true" id="com.bazaarvoice.commons.data.dao.audit.BaseAuditActionMongoMarshaller" class="com.bazaarvoice.commons.data.dao.mongo.audit.AbstractAuditActionMongoMarshaller">
+        <property name="fields" ref="com.bazaarvoice.commons.data.dao.audit.AuditActionMongoFields"/>
+        <property name="classToTypeConverter" ref="com.bazaarvoice.commons.data.dao.audit.AuditActionClassToTypeConverter"/>
+        <property name="userDAO" ref="com.bazaarvoice.commons.data.dao.TestUserDAO"/>
+    </bean>
+
+    <bean id="com.bazaarvoice.commons.data.dao.audit.AuditActionClassToTypeConverter" class="com.bazaarvoice.commons.data.dao.mongo.audit.DefaultAuditActionClassToTypeConverter">
+        <property name="typeEnumClass" value="test.integration.dao.impl.TestAuditActionType"/>
+    </bean>
+
+    <bean id="com.bazaarvoice.commons.data.dao.audit.AuditActionMongoFields" class="com.bazaarvoice.commons.data.dao.mongo.audit.DefaultAuditActionMongoFields"/>
+
+    <!-- Reusable Base Mongo DAO -->
+    <bean abstract="true" id="com.bazaarvoice.commons.data.dao.BaseMongoDAO" class="com.bazaarvoice.commons.data.dao.mongo.AbstractMongoDAO">
+        <property name="mongoAccessService" ref="com.bazaarvoice.commons.data.services.MongoAccessService"/>
+    </bean>
+
+    <!-- Mongo -->
+    <bean id="com.bazaarvoice.commons.data.services.MongoAccessService" class="com.bazaarvoice.commons.data.dao.mongo.impl.MongoAccessServiceImpl">
+        <property name="serverAuthorities" value="127.0.0.1"/>
+        <property name="databaseName" value="bvCommonsDataDAOTest"/>
+    </bean>
+</beans>
+        
