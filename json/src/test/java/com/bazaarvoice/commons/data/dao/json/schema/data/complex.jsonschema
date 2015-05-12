@@ -1,0 +1,29 @@
+{
+    "$schema": "http://json-schema.org/draft-03/schema",
+
+    "id": "complex.jsonschema",
+
+    "type": [ "object", "string", "integer", "array" ],
+
+    "minLength": 1,
+    "maxLength": 20,
+
+    "minimum": 5,
+    "maximum": 100,
+    "exclusiveMaximum": true,
+
+    "enum": [ "abc", "def", "ghi", "jkl", 5, 10, 15, 20 ],
+
+    "properties": {
+        "sProp": { "type": "string" },
+        "nProp": { "type": "number" }
+    },
+
+    "items": {
+        "maximum": 1000,
+        "minimum": 2.5,
+        "pattern": "ack.*bar",
+        "type": [ "string", "number"
+        ]
+    }
+}

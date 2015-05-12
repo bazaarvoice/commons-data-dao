@@ -1,1 +1,1 @@
-The DAO module contains general DAO interfaces and base classes for accessing data using any number of data sources.
+The Bazaarvoice Commons Data is an implementation of the general DAO.
