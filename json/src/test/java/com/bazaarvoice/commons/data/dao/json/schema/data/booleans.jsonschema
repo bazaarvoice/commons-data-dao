@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json-schema.org/draft-03/schema",
+
+    "id": "booleans.jsonschema",
+
+    "type": "object",
+    "properties": {
+        "bProp": { "type": "boolean" },
+
+        "bPropDefaultFalse": {
+            "type": "boolean",
+            "default": false
+        },
+        "bPropDefaultTrue": {
+            "type": "boolean",
+            "default": true
+        }
+    }
+}

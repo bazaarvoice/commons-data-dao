@@ -1,0 +1,51 @@
+{
+    "$schema": "http://json-schema.org/draft-03/schema",
+
+    "id": "references.jsonschema",
+
+    "type": "object",
+    "properties": {
+        "oPropToRef": {
+            "id": "schemaToBeReferenced",
+
+            "type": "object",
+            "properties": {
+                "oPropRef1": {
+                    "$ref": "schemaToBeReferenced"
+                }
+            }
+        },
+        "oPropRef2": {
+            "$ref": "basic.jsonschema"
+        },
+        "oPropRef3": {
+            "type": "object",
+            "properties": {
+
+            },
+            "additionalProperties": {
+                "$ref": "strings.jsonschema"
+            }
+        },
+
+        "oPropExtend1": {
+            "extends": "strings.jsonschema",
+            "type": "object",
+            "properties": {
+                "sExtended1": {
+                    "type": "string"
+                }
+            }
+        },
+
+        "oPropExtend2": {
+            "type": "object",
+            "properties": {
+
+            },
+            "additionalProperties": {
+                "extends": "basic.jsonschema"
+            }
+        }
+    }
+}

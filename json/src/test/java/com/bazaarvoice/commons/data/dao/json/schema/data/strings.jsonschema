@@ -1,0 +1,99 @@
+{
+    "$schema": "http://json-schema.org/draft-03/schema",
+
+    "id": "strings.jsonschema",
+
+    "type": "object",
+    "properties": {
+        "sProp": { "type": "string" },
+
+        "sPropDefault": {
+            "type": "string",
+            "default": "theDefault"
+        },
+        "sPropMin": {
+            "type": "string",
+            "minLength": 10
+        },
+        "sPropMax": {
+            "type": "string",
+            "maxLength": 100
+        },
+        "sPropPattern": {
+            "type": "string",
+            "pattern": "[0-9]+"
+        },
+        "sPropEnum1": {
+            "type": "string",
+            "enum": [ "single" ]
+        },
+        "sPropEnum2": {
+            "type": "string",
+            "enum": [ "one", "two", "three" ]
+        },
+
+        "sPropFormatCSSColor": {
+            "type": "string",
+            "format": "color"
+        },
+        "sPropFormatCSSStyle": {
+            "type": "string",
+            "format": "style"
+        },
+        "sPropFormatDate": {
+            "type": "string",
+            "format": "date"
+        },
+        "sPropFormatDateTime": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "sPropFormatEmail": {
+            "type": "string",
+            "format": "email"
+        },
+        "sPropFormatHostname": {
+            "type": "string",
+            "format": "host-name"
+        },
+        "sPropFormatIPV4": {
+            "type": "string",
+            "format": "ip-address"
+        },
+        "sPropFormatIPV6": {
+            "type": "string",
+            "format": "ipv6"
+        },
+        "sPropFormatPhone": {
+            "type": "string",
+            "format": "phone"
+        },
+        "sPropFormatRegEx": {
+            "type": "string",
+            "format": "regex"
+        },
+        "sPropFormatTime": {
+            "type": "string",
+            "format": "time"
+        },
+        "sPropFormatURI": {
+            "type": "string",
+            "format": "uri"
+        },
+        "sPropFormatUTCMillis": {
+            "type": "string",
+            "format": "utc-millisec"
+        },
+        "sPropFormatCustom": {
+            "type": "string",
+            "format": "http://dev.bv.com/myschema.jsonschema"
+        },
+
+        "sPropMulti": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 50,
+            "default": "aDefault"
+        }
+    }
+}
