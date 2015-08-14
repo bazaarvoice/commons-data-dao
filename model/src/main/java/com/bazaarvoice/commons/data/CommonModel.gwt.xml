@@ -1,0 +1,11 @@
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.2//EN" "http://google-web-toolkit.googlecode.com/svn/releases/2.2/distro-source/core/src/gwt-module.dtd">
+
+<!--
+    Module that defines the model classes as being available in GWT
+
+    Deprecated. Use com.bazaarvoice.commons.data.model.CommonModel instead
+-->
+<module>
+    <!-- Source packages -->
+    <source path="model"/>
+</module>

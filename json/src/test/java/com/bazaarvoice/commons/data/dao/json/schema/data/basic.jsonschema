@@ -1,0 +1,119 @@
+{
+    "$schema": "http://json-schema.org/draft-03/schema",
+
+    "id": "basic.jsonschema",
+
+    "type": "object",
+    "properties": {
+        "sProp1": {
+            "title": "Required String",
+            "description": "String that is required",
+            "type": "string",
+            "required": true
+        },
+        "sProp2": {
+            "title": "Optional String",
+            "type": "string"
+        },
+
+        "nProp1": {
+            "title": "Required Number",
+            "type": "number",
+            "required": true
+        },
+        "nProp2": {
+            "title": "Optional Number",
+            "type": "number"
+        },
+
+        "iProp1": {
+            "title": "Required Integer",
+            "type": "integer",
+            "required": true
+        },
+        "iProp2": {
+            "title": "Optional Integer",
+            "type": "integer"
+        },
+
+        "bProp1": {
+            "title": "Required Boolean",
+            "type": "boolean",
+            "required": true
+        },
+        "bProp2": {
+            "title": "Optional Boolean",
+            "type": "boolean"
+        },
+
+        "oProp1": {
+            "title": "Required Object",
+            "type": "object",
+            "required": true,
+            "properties": {
+                "sSubProp1": {
+                    "type": "string"
+                }
+            }
+        },
+        "oProp2": {
+            "title": "Optional Object",
+            "type": "object",
+            "properties": {
+                "sSubProp2": {
+                    "type": "string"
+                }
+            }
+        },
+
+        "arrayProp1": {
+            "title": "Required Array",
+            "type": "array",
+            "required": true,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "sSubProp1": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "arrayProp2": {
+            "title": "Optional Array",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "sSubProp2": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+
+        "anyProp1": {
+            "title": "Required Any",
+            "type": "any",
+            "required": true
+        },
+        "anyProp2": {
+            "title": "Optional Any",
+            "type": "any"
+        },
+
+        "nullProp1": {
+            "title": "Required Null",
+            "type": "null",
+            "required": true
+        },
+        "nullProp2": {
+            "title": "Optional Null",
+            "type": "null"
+        },
+        "nullableProp": {
+            "title": "Nullable",
+            "type": "null"
+        }
+    }
+}

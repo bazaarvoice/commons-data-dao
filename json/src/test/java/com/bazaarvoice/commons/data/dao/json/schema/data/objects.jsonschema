@@ -1,0 +1,63 @@
+{
+    "$schema": "http://json-schema.org/draft-03/schema",
+
+    "id": "objects.jsonschema",
+
+    "type": "object",
+    "properties": {
+        "oProp": {
+            "type": "object",
+
+            "properties": {}
+        },
+
+        "oPropProperties": {
+            "type": "object",
+
+            "properties": {
+                "sSubProp": {"type": "string"},
+                "nSubProp": {"type": "number"}
+            }
+        },
+
+        "oPropPatternProperties": {
+            "type": "object",
+            "properties": {},
+
+            "patternProperties": {
+                "s.+": {"type": "string"},
+                "n.+": {"type": "number"}
+            }
+        },
+
+        "oPropAdditionalProperties": {
+            "type": "object",
+            "properties": {},
+
+            "additionalProperties": {"type": "string"}
+        },
+
+        "oPropNoAdditionalProperties": {
+            "type": "object",
+            "properties": {},
+
+            "additionalProperties": false
+        },
+
+        "oPropMultiProperties": {
+            "type": "object",
+
+            "properties": {
+                "sSubProp": {"type": "string"},
+                "nSubProp": {"type": "number"}
+            },
+
+            "patternProperties": {
+                "s.+": {"type": "string"},
+                "n.+": {"type": "number"}
+            },
+
+            "additionalProperties": {"type": "string"}
+        }
+    }
+}

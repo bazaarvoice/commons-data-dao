@@ -1,0 +1,123 @@
+{
+    "$schema": "http://json-schema.org/draft-03/schema",
+
+    "id": "numbers.jsonschema",
+
+    "type": "object",
+    "properties": {
+        "nProp": { "type": "number" },
+
+        "nPropDefault": {
+            "type": "number",
+            "default": 101.5
+        },
+        "nPropMin": {
+            "type": "number",
+            "minimum": 1.5
+        },
+        "nPropMax": {
+            "type": "number",
+            "maximum": 150.5
+        },
+        "nPropMinInclusive": {
+            "type": "number",
+            "minimum": 1.6,
+            "exclusiveMinimum": false
+        },
+        "nPropMinExclusive": {
+            "type": "number",
+            "minimum": 1.7,
+            "exclusiveMinimum": true
+        },
+        "nPropMaxInclusive": {
+            "type": "number",
+            "maximum": 150.6,
+            "exclusiveMaximum": false
+        },
+        "nPropMaxExclusive": {
+            "type": "number",
+            "maximum": 150.7,
+            "exclusiveMaximum": true
+        },
+
+        "nPropDivisibleBy": {
+            "type": "number",
+            "divisibleBy": 2.5
+        },
+        "nPropEnums": {
+            "type": "number",
+            "enum": [ 1.1, 1.2, 1.3, 1.4 ]
+        },
+
+        "nPropMulti": {
+            "type": "number",
+
+            "default": 102.5,
+
+            "minimum": 2.5,
+            "exclusiveMinimum": false,
+            "maximum": 200.5,
+            "exclusiveMaximum": true,
+
+            "divisibleBy": 2.5
+        },
+
+        "iProp": { "type": "integer" },
+
+        "iPropDefault": {
+            "type": "integer",
+            "default": 42
+        },
+
+        "iPropMin": {
+            "type": "integer",
+            "minimum": 20
+        },
+        "iPropMax": {
+            "type": "integer",
+            "maximum": 200
+        },
+        "iPropMinInclusive": {
+            "type": "integer",
+            "minimum": 21,
+            "exclusiveMinimum": false
+        },
+        "iPropMinExclusive": {
+            "type": "integer",
+            "minimum": 22,
+            "exclusiveMinimum": true
+        },
+        "iPropMaxInclusive": {
+            "type": "integer",
+            "maximum": 201,
+            "exclusiveMaximum": false
+        },
+        "iPropMaxExclusive": {
+            "type": "integer",
+            "maximum": 202,
+            "exclusiveMaximum": true
+        },
+
+        "iPropDivisibleBy": {
+            "type": "integer",
+            "divisibleBy": 10
+        },
+        "iPropEnums": {
+            "type": "integer",
+            "enum": [ 1, 2, 3, 5, 8, 13, 21 ]
+        },
+
+        "iPropMulti": {
+            "type": "integer",
+
+            "default": 101,
+
+            "minimum": 10,
+            "exclusiveMinimum": false,
+            "maximum": 1000,
+            "exclusiveMaximum": true,
+
+            "divisibleBy": 5
+        }
+    }
+}
