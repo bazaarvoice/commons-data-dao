@@ -11,8 +11,7 @@ import java.util.Map;
 
 /**
  * Used to query MongoDB via the Aggregate Pipeline in a fluent style.
- *
- * <p/>
+ * <p>
  * <pre>
  * {@code
  * List<DBObject> pipeline = pipelineOf(
