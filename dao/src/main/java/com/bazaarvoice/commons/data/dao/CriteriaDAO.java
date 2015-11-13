@@ -3,6 +3,7 @@ package com.bazaarvoice.commons.data.dao;
 import com.bazaarvoice.commons.data.model.QueryResults;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,15 +22,27 @@ public interface CriteriaDAO<T, C extends Criteria<T, C>, S extends SortOrder<T,
     /** Returns all objects that match the criteria, but only return their IDs. */
     Iterable<String> findIDs(@Nullable C criteria, @Nullable S sortOrder);
 
+    /** Returns first object that matches the criteria. */
+    T findOne(@Nullable C criteria, @Nullable S sortOrder);
+
+    /** Returns first object that matches the criteria. */
+    T findOne(@Nullable C criteria, @Nullable S sortOrder, @Nullable Map<String, Integer> keys);
+
     /** Returns all objects that match the criteria. */
     Iterable<T> find(@Nullable C criteria, @Nullable S sortOrder);
 
-    /** Returns first object that matches the criteria. */
-    T findOne(@Nullable C criteria, @Nullable S sortOrder);
+    Iterable<T> find(@Nullable C criteria, @Nullable S sortOrder, @Nullable Map<String, Integer> keys);
 
     /** Returns a limited set of objects that match the criteria. */
     QueryResults<T> find(@Nullable C criteria, @Nullable S sortOrder, int startIndex, int maxResults);
 
+    QueryResults<T> find(@Nullable C criteria, @Nullable S sortOrder, int startIndex, int maxResults, @Nullable Map<String, Integer> keys);
+
     /** Returns the objects that match the criteria, indexed by their primary key. */
     Map<String, T> findIndexed(@Nullable C criteria, @Nullable S sortOrder);
+
+    List<String> findDistinct(String propertyName, @Nullable C criteria);
+
+    String getCollectionName();
+
 }

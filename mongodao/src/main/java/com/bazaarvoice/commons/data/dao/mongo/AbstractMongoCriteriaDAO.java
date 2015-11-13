@@ -65,10 +65,53 @@ public abstract class AbstractMongoCriteriaDAO<T extends Model, C extends Criter
     @Timed
     @ExceptionMetered
     @Override
+    @SuppressWarnings("unchecked")
+    public T findOne(@Nullable C criteria, @Nullable S sortOrder) {
+        return findOne(criteria, sortOrder, null);
+    }
+
+    @Timed
+    @ExceptionMetered
+    @Override
+    @SuppressWarnings("unchecked")
+    public T findOne(@Nullable C criteria, @Nullable S sortOrder, @Nullable Map<String, Integer> keys) {
+        DBObject dbObjectKeys = new MongoDBObject();
+        if (keys != null) {
+            dbObjectKeys.putAll(keys);
+        }
+
+        DBCursor dbCursor = getPrimaryCollection().find(convertCriteriaToDBObject(criteria), dbObjectKeys).sort(convertSortOrderToDBObject(sortOrder)).limit(1);
+
+        try {
+            logQueryDetails(dbCursor);
+
+            Iterator<DBObject> iter = dbCursor.iterator();
+            return iter.hasNext() ? (T) _modelMarshaller.fromDBObject(new MongoDBObject(iter.next())) : null;
+        } finally {
+            dbCursor.close();
+        }
+    }
+
+    @Timed
+    @ExceptionMetered
+    @Override
+    @SuppressWarnings("unchecked")
     public Iterable<T> find(@Nullable C criteria, @Nullable S sortOrder) {
-        DBCursor dbCursor = getPrimaryCollection().
-                find(convertCriteriaToDBObject(criteria)).
-                sort(convertSortOrderToDBObject(sortOrder));
+        return find(criteria, sortOrder, null);
+    }
+
+    @Timed
+    @ExceptionMetered
+    @Override
+    @SuppressWarnings("unchecked")
+    public Iterable<T> find(@Nullable C criteria, @Nullable S sortOrder, @Nullable Map<String, Integer> keys) {
+        DBObject dbObjectKeys = new MongoDBObject();
+        if (keys != null) {
+            dbObjectKeys.putAll(keys);
+        }
+
+        DBCursor dbCursor = getPrimaryCollection().find(convertCriteriaToDBObject(criteria), dbObjectKeys);
+        dbCursor.sort(convertSortOrderToDBObject(sortOrder));
 
         try {
             logQueryDetails(dbCursor);
@@ -87,28 +130,25 @@ public abstract class AbstractMongoCriteriaDAO<T extends Model, C extends Criter
     @Timed
     @ExceptionMetered
     @Override
-    public T findOne(@Nullable C criteria, @Nullable S sortOrder) {
-        DBCursor dbCursor = getPrimaryCollection().find(convertCriteriaToDBObject(criteria)).sort(convertSortOrderToDBObject(sortOrder)).limit(1);
-        try {
-            logQueryDetails(dbCursor);
-
-            Iterator<DBObject> iter = dbCursor.iterator();
-            return iter.hasNext() ? (T) _modelMarshaller.fromDBObject(new MongoDBObject(iter.next())) : null;
-        } finally {
-            dbCursor.close();
-        }
+    public QueryResults<T> find(@Nullable C criteria, @Nullable S sortOrder, int startIndex, int maxResults) {
+        return find(criteria, sortOrder, startIndex, maxResults, null);
     }
+
 
     @Timed
     @ExceptionMetered
     @Override
-    public QueryResults<T> find(@Nullable C criteria, @Nullable S sortOrder, int startIndex, int maxResults) {
-        DBCursor dbCursor = getPrimaryCollection().find(convertCriteriaToDBObject(criteria));
-        try {
-            dbCursor.sort(convertSortOrderToDBObject(sortOrder)).
-                    skip(startIndex).
-                    limit(maxResults);
+    @SuppressWarnings("unchecked")
+    public QueryResults<T> find(@Nullable C criteria, @Nullable S sortOrder, int startIndex, int maxResults, @Nullable Map<String, Integer> keys) {
+        DBObject dbObjectKeys = new MongoDBObject();
+        if (keys != null) {
+            dbObjectKeys.putAll(keys);
+        }
 
+        DBCursor dbCursor = getPrimaryCollection().find(convertCriteriaToDBObject(criteria), dbObjectKeys);
+        dbCursor.sort(convertSortOrderToDBObject(sortOrder)).skip(startIndex).limit(maxResults);
+
+        try {
             logQueryDetails(dbCursor);
 
             List<T> list = Lists.newArrayList();
@@ -121,6 +161,7 @@ public abstract class AbstractMongoCriteriaDAO<T extends Model, C extends Criter
         }
     }
 
+
     @Timed
     @ExceptionMetered
     @Override
@@ -132,6 +173,21 @@ public abstract class AbstractMongoCriteriaDAO<T extends Model, C extends Criter
         return map;
     }
 
+
+    @Timed
+    @ExceptionMetered
+    @Override
+    public List<String> findDistinct(String propertyName, @Nullable C criteria) {
+        //noinspection unchecked
+        return (List<String>) getPrimaryCollection().distinct(propertyName, convertCriteriaToDBObject(criteria));
+    }
+
+    @Override
+    public String getCollectionName() {
+        return _primaryCollectionName;
+    }
+
+
     protected void logQueryDetails(DBCursor dbCursor) {
         if (_sLog.isDebugEnabled()) {
             _sLog.debug("Query: " + dbCursor);
@@ -139,10 +195,6 @@ public abstract class AbstractMongoCriteriaDAO<T extends Model, C extends Criter
         }
     }
 
-    protected List<String> findDistinct(String propertyName, @Nullable C criteria) {
-        //noinspection unchecked
-        return (List<String>) getPrimaryCollection().distinct(propertyName, convertCriteriaToDBObject(criteria));
-    }
 
     /**
      * Converts the given criteria to a DB object.  If not null, default implementation assumes the criteria is a {@link MongoCriteria} object.
