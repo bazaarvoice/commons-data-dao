@@ -13,4 +13,10 @@ public interface Criteria<T, C extends Criteria<T, C>> extends Cloneable, Serial
     C addIDIn(Collection<String> objectIDs);
 
     C addIDNotIn(Collection<String> objectIDs);
+
+    void addAll(Criteria criteria);
+
+    boolean isEmpty();
+
+    boolean containsField(String field);
 }

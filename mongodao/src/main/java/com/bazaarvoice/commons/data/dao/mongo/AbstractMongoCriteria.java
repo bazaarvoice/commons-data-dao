@@ -37,4 +37,19 @@ public abstract class AbstractMongoCriteria<T, C extends Criteria<T, C>> extends
         //noinspection unchecked
         return (C) this;
     }
+
+    @Override
+    public void addAll(Criteria criteria) {
+        _queryDBObject.putAll(((AbstractMongoCriteria) criteria).toDBObject());
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return _queryDBObject.isEmpty();
+    }
+
+    @Override
+    public boolean containsField(String field) {
+        return _queryDBObject.containsField(field);
+    }
 }

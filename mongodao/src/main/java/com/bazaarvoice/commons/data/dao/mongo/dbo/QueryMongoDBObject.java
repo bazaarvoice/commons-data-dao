@@ -96,6 +96,18 @@ public class QueryMongoDBObject extends MongoDBObject<QueryMongoDBObject> {
         return appendToEnhancedProperty(key, "$nin", values);
     }
 
+    public QueryMongoDBObject $and(DBObject... queries) {
+        return $and(Arrays.asList(queries));
+    }
+
+    public QueryMongoDBObject $and(List<? extends DBObject> queries) {
+        List<Object> list = convertOrCreateList(get("$and"));
+        list.addAll(queries);
+        put("$and", list);
+
+        return this;
+    }
+
     public QueryMongoDBObject $or(DBObject... queries) {
         return $or(Arrays.asList(queries));
     }
@@ -108,11 +120,11 @@ public class QueryMongoDBObject extends MongoDBObject<QueryMongoDBObject> {
         return this;
     }
 
-    public QueryMongoDBObject $nor(String key, DBObject... queries) {
-        return $nor(key, Arrays.asList(queries));
+    public QueryMongoDBObject $nor(DBObject... queries) {
+        return $nor(Arrays.asList(queries));
     }
 
-    public QueryMongoDBObject $nor(String key, List<? extends DBObject> queries) {
+    public QueryMongoDBObject $nor(List<? extends DBObject> queries) {
         List<Object> list = convertOrCreateList(get("$nor"));
         list.addAll(queries);
         put("$nor", list);
@@ -142,17 +154,15 @@ public class QueryMongoDBObject extends MongoDBObject<QueryMongoDBObject> {
     }
 
     public QueryMongoDBObject $regex(String key, String query, boolean fullText, boolean caseSensitive) {
-        String regex = Pattern.quote(query);
-
         if (!fullText) {
-            regex = "^" + regex;
+            query = "^" + query;
         }
 
         Pattern pattern;
         if (caseSensitive) {
-            pattern = Pattern.compile(regex);
+            pattern = Pattern.compile(query);
         } else {
-            pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            pattern = Pattern.compile(query, Pattern.CASE_INSENSITIVE);
         }
 
         // $regex not needed when a Pattern is used
