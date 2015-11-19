@@ -176,4 +176,8 @@ public class QueryMongoDBObject extends MongoDBObject<QueryMongoDBObject> {
     public QueryMongoDBObject $elemMatch(String key, QueryMongoDBObject subQuery) {
         return appendToEnhancedProperty(key, "$elemMatch", subQuery);
     }
+
+    public QueryMongoDBObject $isolated() {
+        return append("$isolated", 1);
+    }
 }
