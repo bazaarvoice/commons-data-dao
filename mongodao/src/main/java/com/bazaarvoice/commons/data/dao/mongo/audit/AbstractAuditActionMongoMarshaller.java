@@ -63,7 +63,8 @@ public abstract class AbstractAuditActionMongoMarshaller<T extends Enum & AuditA
             //noinspection unchecked
             return (A) type.getActionClass().newInstance();
         } catch (Exception e) {
-            throw Throwables.propagate(e);
+            Throwables.throwIfUnchecked(e);
+            throw new RuntimeException(e);
         }
     }
 

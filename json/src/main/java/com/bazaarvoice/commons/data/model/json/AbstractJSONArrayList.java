@@ -1,6 +1,5 @@
 package com.bazaarvoice.commons.data.model.json;
 
-import com.google.common.base.Throwables;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -23,7 +22,7 @@ public abstract class AbstractJSONArrayList<T> extends AbstractList<T> {
         try {
             return getFromJSONArray(_jsonArray, index);
         } catch (JSONException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

@@ -28,7 +28,8 @@ public class DefaultAuditActionClassToTypeConverter<T extends Enum & AuditAction
                 _typesByClass.put(value.getActionClass(), value);
             }
         } catch (Exception e) {
-            throw Throwables.propagate(e);
+            Throwables.throwIfUnchecked(e);
+            throw new RuntimeException(e);
         }
     }
 

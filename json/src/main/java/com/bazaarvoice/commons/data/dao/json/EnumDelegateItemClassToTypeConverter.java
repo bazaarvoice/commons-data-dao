@@ -1,6 +1,5 @@
 package com.bazaarvoice.commons.data.dao.json;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 
 import java.lang.reflect.Method;
@@ -30,7 +29,7 @@ public class EnumDelegateItemClassToTypeConverter<E extends Enum & DelegateItemT
                 _typesByClass.put(value.getDelegateItemClass(), value);
             }
         } catch (Exception e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

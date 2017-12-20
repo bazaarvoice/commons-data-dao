@@ -5,6 +5,8 @@ import com.bazaarvoice.commons.data.dao.ModelDAO;
 import com.bazaarvoice.commons.data.dao.mongo.dbo.MongoDBObject;
 import com.bazaarvoice.commons.data.dao.mongo.dbo.QueryMongoDBObject;
 import com.bazaarvoice.commons.data.model.Model;
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Collections2;
@@ -13,12 +15,6 @@ import com.google.common.collect.Maps;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-import com.yammer.metrics.Metrics;
-import com.yammer.metrics.annotation.ExceptionMetered;
-import com.yammer.metrics.annotation.Timed;
-import com.yammer.metrics.core.Meter;
-import com.yammer.metrics.core.Timer;
-import com.yammer.metrics.core.TimerContext;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.Assert;
 
@@ -29,7 +25,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractMongoDAO<T extends Model> implements ModelDAO<T> {
     protected MongoAccessService _mongoAccessService;
@@ -50,9 +45,6 @@ public abstract class AbstractMongoDAO<T extends Model> implements ModelDAO<T> {
     public void setModelMarshaller(MongoDataMarshaller<T> modelMarshaller) {
         _modelMarshaller = modelMarshaller;
     }
-
-    private final Timer createTimer = Metrics.newTimer(getClass(), "create");
-    private final Meter createExceptionsMeter = Metrics.newMeter(getClass(), "createExceptions", "exceptions", TimeUnit.SECONDS);
 
     @Timed
     @ExceptionMetered
@@ -134,15 +126,11 @@ public abstract class AbstractMongoDAO<T extends Model> implements ModelDAO<T> {
     }
 
     public void create(T... objects) {
-        // must handle this manually since AOP pointcuts don't work with ellipses methods!
-        TimerContext timer = createTimer.time();
         try {
             create(Arrays.asList(objects));
         } catch (Exception e) {
-            createExceptionsMeter.mark();
-            throw Throwables.propagate(e);
-        } finally {
-            timer.stop();
+            Throwables.throwIfUnchecked(e);
+            throw new RuntimeException(e);
         }
     }
 

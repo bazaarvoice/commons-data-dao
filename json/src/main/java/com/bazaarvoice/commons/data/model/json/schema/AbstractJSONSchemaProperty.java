@@ -1,7 +1,5 @@
 package com.bazaarvoice.commons.data.model.json.schema;
 
-import com.google.common.base.Throwables;
-
 import javax.annotation.Nullable;
 import java.io.Serializable;
 
@@ -30,7 +28,7 @@ public abstract class AbstractJSONSchemaProperty<P extends AbstractJSONSchemaPro
             P clone = (P) super.clone();
             return clone.valueSchema(_valueSchema != null ? _valueSchema.clone() : null);
         } catch (CloneNotSupportedException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

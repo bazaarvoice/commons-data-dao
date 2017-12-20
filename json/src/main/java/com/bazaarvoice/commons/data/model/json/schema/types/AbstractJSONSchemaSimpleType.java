@@ -5,7 +5,6 @@ import com.bazaarvoice.commons.data.model.json.schema.JSONSchemaType;
 import com.bazaarvoice.commons.data.model.json.schema.validation.ResultType;
 import com.bazaarvoice.commons.data.model.json.schema.validation.ValidationResult;
 import com.bazaarvoice.commons.data.model.json.schema.validation.ValidationResults;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Sets;
 
 import javax.annotation.Nullable;
@@ -70,7 +69,7 @@ public abstract class AbstractJSONSchemaSimpleType<V, S extends AbstractJSONSche
             S clone = (S) super.clone();
             return clone.enumValues(_enumValues);
         } catch (CloneNotSupportedException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
