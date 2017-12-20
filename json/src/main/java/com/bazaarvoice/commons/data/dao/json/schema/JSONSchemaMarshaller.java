@@ -20,7 +20,6 @@ import com.bazaarvoice.commons.data.model.json.schema.types.JSONSchemaUnionType;
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -211,7 +210,7 @@ public class JSONSchemaMarshaller extends AbstractJSONMarshaller<JSONSchema> {
                 try {
                     return toJSONObject(schema, includeSchemaVersion);
                 } catch (JSONException e) {
-                    throw Throwables.propagate(e);
+                    throw new RuntimeException(e);
                 }
             }
         });
@@ -490,7 +489,7 @@ public class JSONSchemaMarshaller extends AbstractJSONMarshaller<JSONSchema> {
         try {
             return _schemaCache.get(schemaID).clone();
         } catch (ExecutionException e) {
-            throw Throwables.propagate(e.getCause());
+            throw new RuntimeException(e.getCause());
         }
     }
 
@@ -604,9 +603,9 @@ public class JSONSchemaMarshaller extends AbstractJSONMarshaller<JSONSchema> {
         try {
             return typeClass.newInstance();
         } catch (InstantiationException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

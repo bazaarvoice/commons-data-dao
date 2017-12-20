@@ -236,7 +236,8 @@ public class MongoDBObject<D extends MongoDBObject<D>> implements DBObject, Clon
             try {
                 modifier = dbObjectType.newInstance();
             } catch (Throwable t) {
-                throw Throwables.propagate(t);
+                Throwables.throwIfUnchecked(t);
+                throw new RuntimeException(t);
             }
             put(key, modifier);
         }
@@ -359,7 +360,7 @@ public class MongoDBObject<D extends MongoDBObject<D>> implements DBObject, Clon
         try {
             return super.clone();
         } catch (CloneNotSupportedException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

@@ -2,7 +2,6 @@ package com.bazaarvoice.commons.data.dao.json;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Collections2;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +26,7 @@ public abstract class AbstractMappingJSONMarshaller<T> extends AbstractJSONMarsh
             }
             return mappedJSONObject;
         } catch (JSONException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

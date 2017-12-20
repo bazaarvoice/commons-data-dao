@@ -1,7 +1,6 @@
 package com.bazaarvoice.commons.data.model.json;
 
 import com.google.common.base.Function;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Iterators;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,6 +8,7 @@ import org.json.JSONObject;
 import javax.annotation.Nullable;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -33,7 +33,7 @@ public abstract class AbstractJSONObjectMap<T> extends AbstractMap<String, T> {
         try {
             return getFromJSONObject(_jsonObject, (String) key);
         } catch (JSONException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -50,7 +50,7 @@ public abstract class AbstractJSONObjectMap<T> extends AbstractMap<String, T> {
         try {
             putToJSONObject(_jsonObject, key, value);
         } catch (JSONException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
         return oldValue;
     }
@@ -63,7 +63,7 @@ public abstract class AbstractJSONObjectMap<T> extends AbstractMap<String, T> {
             @Override
             public Iterator<Entry<String, T>> iterator() {
                 @SuppressWarnings ({"unchecked"})
-                Iterator<String> keys = _jsonObject != null ? _jsonObject.keys() : Iterators.<String>emptyIterator();
+                Iterator<String> keys = _jsonObject != null ? _jsonObject.keys() : Collections.<String>emptyIterator();
 
                 return Iterators.transform(keys, new Function<String, Entry<String, T>>() {
                     @Override
