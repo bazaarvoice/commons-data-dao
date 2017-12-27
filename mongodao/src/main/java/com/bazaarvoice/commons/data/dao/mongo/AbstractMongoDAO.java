@@ -4,6 +4,7 @@ import com.bazaarvoice.commons.data.dao.ModelChanges;
 import com.bazaarvoice.commons.data.dao.ModelDAO;
 import com.bazaarvoice.commons.data.dao.mongo.dbo.MongoDBObject;
 import com.bazaarvoice.commons.data.dao.mongo.dbo.QueryMongoDBObject;
+import com.bazaarvoice.commons.data.dao.mongo.dbo.UpdateMongoDBObject;
 import com.bazaarvoice.commons.data.model.Model;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Timed;
@@ -137,6 +138,9 @@ public abstract class AbstractMongoDAO<T extends Model> implements ModelDAO<T> {
     @Timed
     @ExceptionMetered
     public void create(Collection<T> objects) {
+        if (objects.isEmpty()) {
+            return;
+        }
         List<DBObject> dbObjects = Lists.newArrayList();
         for (T object : objects) {
             dbObjects.add(_modelMarshaller.toDBObject(object));
@@ -148,8 +152,14 @@ public abstract class AbstractMongoDAO<T extends Model> implements ModelDAO<T> {
         Assert.isInstanceOf(MongoModelChanges.class, modelChanges);
         MongoModelChanges<T> mongoModelChanges = (MongoModelChanges<T>) modelChanges;
 
+        // Prevent empty change list from clearing out object
+        UpdateMongoDBObject dbObject = mongoModelChanges.toDBObject();
+        if (dbObject.isEmpty()) {
+            return;
+        }
+
         DBCollection primaryCollection = getPrimaryCollection();
-        primaryCollection.update(new QueryMongoDBObject().forID(objectID), mongoModelChanges.toDBObject(), false, false);
+        primaryCollection.update(new QueryMongoDBObject().forID(objectID), dbObject, false, false);
     }
 
     @Timed
@@ -178,6 +188,9 @@ public abstract class AbstractMongoDAO<T extends Model> implements ModelDAO<T> {
     @Timed
     @ExceptionMetered
     public void deleteAllByID(Collection<String> objectIDs) {
+        if (objectIDs.isEmpty()) {
+            return;
+        }
         getPrimaryCollection().remove(new QueryMongoDBObject().forIDs(objectIDs));
     }
 
