@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.bazaarvoice.commons.data</groupId>
         <artifactId>data-parent</artifactId>
-        <version>4.2-SNAPSHOT</version>
+        <version>4.2</version>
         <relativePath>parent/pom.xml</relativePath>
     </parent>
 
@@ -19,7 +19,8 @@
         <connection>scm:git:git@github.com:bazaarvoice/commons-data-dao.git</connection>
         <developerConnection>scm:git:git@github.com:bazaarvoice/commons-data-dao.git</developerConnection>
         <url>scm:git:git@github.com:bazaarvoice/commons-data-dao.git</url>
-    </scm>
+      <tag>commons-data-dao-4.2</tag>
+  </scm>
 
     <modules>
         <module>parent</module>
