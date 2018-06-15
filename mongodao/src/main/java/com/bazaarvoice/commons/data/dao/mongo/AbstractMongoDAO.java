@@ -11,6 +11,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mongodb.DBCollection;
@@ -28,6 +29,9 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractMongoDAO<T extends Model> implements ModelDAO<T> {
+
+    private final static int BATCH_SIZE = 1000;
+
     protected MongoAccessService _mongoAccessService;
     protected String _primaryCollectionName;
     protected MongoDataMarshaller<T> _modelMarshaller;
@@ -191,7 +195,11 @@ public abstract class AbstractMongoDAO<T extends Model> implements ModelDAO<T> {
         if (objectIDs.isEmpty()) {
             return;
         }
-        getPrimaryCollection().remove(new QueryMongoDBObject().forIDs(objectIDs));
+        // This uses an $in operator
+        // Batching to prevent overwhelming db in a single transaction
+        for (List<String> batch : Iterables.partition(objectIDs, BATCH_SIZE)) {
+            getPrimaryCollection().remove(new QueryMongoDBObject().forIDs(batch));
+        }
     }
 
     protected int getNextSequenceValue(String sequenceName) {
