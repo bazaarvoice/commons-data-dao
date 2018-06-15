@@ -195,6 +195,8 @@ public abstract class AbstractMongoDAO<T extends Model> implements ModelDAO<T> {
         if (objectIDs.isEmpty()) {
             return;
         }
+        // This uses an $in operator
+        // Batching to prevent overwhelming db in a single transaction
         for (List<String> batch : Iterables.partition(objectIDs, BATCH_SIZE)) {
             getPrimaryCollection().remove(new QueryMongoDBObject().forIDs(batch));
         }
