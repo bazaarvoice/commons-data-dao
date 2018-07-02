@@ -20,6 +20,7 @@
     <properties>
         <springframework.version>4.3.13.RELEASE</springframework.version>
         <metrics.version>3.2.5</metrics.version>
+        <gwt.version>2.8.2</gwt.version>
         <additionalparam>-Xdoclint:none</additionalparam>
     </properties>
 
@@ -119,6 +120,12 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>gwt-maven-plugin</artifactId>
+                    <version>${gwt.version}</version>
+                </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
