@@ -7,20 +7,27 @@
         <groupId>com.bazaarvoice.commons</groupId>
         <artifactId>bv-opensource-super-pom</artifactId>
         <version>1.4</version>
-        <relativePath />
+        <relativePath/>
     </parent>
 
     <groupId>com.bazaarvoice.commons.data</groupId>
     <artifactId>data-parent</artifactId>
-    <version>4.5-SNAPSHOT</version>
+    <version>5.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Bazaarvoice Commons Data DAO Parent</name>
 
     <properties>
-        <springframework.version>4.3.13.RELEASE</springframework.version>
-        <metrics.version>3.2.5</metrics.version>
+        <springframework.version>5.3.3</springframework.version>
+        <metrics.version>4.1.2</metrics.version>
         <gwt.version>2.8.2</gwt.version>
+        <mongodb-driver-legacy.version>4.2.0</mongodb-driver-legacy.version>
+        <json.version>20201115</json.version>
+        <guava.version>30.1-jre</guava.version>
+        <commons-logging.version>1.2</commons-logging.version>
+        <commons-io.version>2.8.0</commons-io.version>
+        <commons-lang3.version>3.11</commons-lang3.version>
+        <jsr305.version>3.0.2</jsr305.version>
         <additionalparam>-Xdoclint:none</additionalparam>
     </properties>
 
@@ -47,13 +54,13 @@
             <!-- Data -->
             <dependency>
                 <groupId>org.mongodb</groupId>
-                <artifactId>mongo-java-driver</artifactId>
-                <version>3.7.1</version>
+                <artifactId>mongodb-driver-legacy</artifactId>
+                <version>${mongodb-driver-legacy.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
-                <version>20160810</version>
+                <version>${json.version}</version>
             </dependency>
 
             <!-- Metrics -->
@@ -72,34 +79,34 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>20.0</version>
+                <version>${guava.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>jsr305</artifactId>
-                <version>3.0.2</version>
+                <version>${jsr305.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
-                <version>1.2</version>
+                <version>${commons-logging.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.7</version>
+                <version>${commons-lang3.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.6</version>
+                <version>${commons-io.version}</version>
             </dependency>
 
             <!-- Testing -->
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
-                <version>6.13.1</version>
+                <version>6.14.3</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -129,13 +136,26 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>2.20.1</version>
+                    <version>3.0.0-M5</version>
                 </plugin>
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>3.0.2</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <version>6.1.0</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>

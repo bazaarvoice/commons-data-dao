@@ -1,148 +1,117 @@
 package com.bazaarvoice.commons.data.dao.mongo;
 
+import com.mongodb.AutoEncryptionSettings;
 import com.mongodb.DBDecoderFactory;
 import com.mongodb.DBEncoderFactory;
-import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCompressor;
+import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
 import com.mongodb.WriteConcern;
+import com.mongodb.event.ClusterListener;
+import com.mongodb.event.CommandListener;
+import com.mongodb.selector.ServerSelector;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bson.UuidRepresentation;
+import org.bson.codecs.configuration.CodecRegistry;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 import javax.net.SocketFactory;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
+import java.util.List;
 
 /**
- * A factory bean for construction of a {@link MongoClientOptions} instance.
- * Source: http://docs.spring.io/spring-data/data-mongodb/docs/current/api/org/springframework/data/mongodb/core/MongoClientOptionsFactoryBean.html
- * Updated with additional configurational configuratoin properties.
+ * Spring factory bean for construction of a {@link MongoClientOptions} instance
+ * Deprecated properties are stubbed out for backward compatibility
  */
 public class MongoClientOptionsFactoryBean extends AbstractFactoryBean<MongoClientOptions> {
 
-    private static final MongoClientOptions DEFAULT_MONGO_OPTIONS = MongoClientOptions.builder().build();
+    private static final Log _sLog = LogFactory.getLog(MongoClientOptionsFactoryBean.class);
 
-    private String description = DEFAULT_MONGO_OPTIONS.getDescription();
+    private static final MongoClientOptions DEFAULT_MONGO_OPTIONS = MongoClientOptions
+            .builder()
+            .build();
+
+    private String applicationName = DEFAULT_MONGO_OPTIONS.getApplicationName();
+    private List<com.mongodb.MongoCompressor> compressorList = DEFAULT_MONGO_OPTIONS.getCompressorList();
+    private ReadPreference readPreference = DEFAULT_MONGO_OPTIONS.getReadPreference();
+    private WriteConcern writeConcern = DEFAULT_MONGO_OPTIONS.getWriteConcern();
+    private boolean retryWrites = DEFAULT_MONGO_OPTIONS.getRetryWrites();
+    private boolean retryReads = DEFAULT_MONGO_OPTIONS.getRetryReads();
+    private ReadConcern readConcern = DEFAULT_MONGO_OPTIONS.getReadConcern();
+    private CodecRegistry codecRegistry = DEFAULT_MONGO_OPTIONS.getCodecRegistry();
+    private UuidRepresentation uuidRepresentation = DEFAULT_MONGO_OPTIONS.getUuidRepresentation();
+    private ServerSelector serverSelector = DEFAULT_MONGO_OPTIONS.getServerSelector();
     private int minConnectionsPerHost = DEFAULT_MONGO_OPTIONS.getMinConnectionsPerHost();
     private int connectionsPerHost = DEFAULT_MONGO_OPTIONS.getConnectionsPerHost();
-    private int threadsAllowedToBlockForConnectionMultiplier = DEFAULT_MONGO_OPTIONS
-            .getThreadsAllowedToBlockForConnectionMultiplier();
+    private int serverSelectionTimeout = DEFAULT_MONGO_OPTIONS.getServerSelectionTimeout();
     private int maxWaitTime = DEFAULT_MONGO_OPTIONS.getMaxWaitTime();
     private int maxConnectionIdleTime = DEFAULT_MONGO_OPTIONS.getMaxConnectionIdleTime();
     private int maxConnectionLifeTime = DEFAULT_MONGO_OPTIONS.getMaxConnectionLifeTime();
     private int connectTimeout = DEFAULT_MONGO_OPTIONS.getConnectTimeout();
     private int socketTimeout = DEFAULT_MONGO_OPTIONS.getSocketTimeout();
-    private boolean socketKeepAlive = DEFAULT_MONGO_OPTIONS.isSocketKeepAlive();
-    private ReadPreference readPreference = DEFAULT_MONGO_OPTIONS.getReadPreference();
-    private DBDecoderFactory dbDecoderFactory = DEFAULT_MONGO_OPTIONS.getDbDecoderFactory();
-    private DBEncoderFactory dbEncoderFactory = DEFAULT_MONGO_OPTIONS.getDbEncoderFactory();
-    private WriteConcern writeConcern = DEFAULT_MONGO_OPTIONS.getWriteConcern();
-    private SocketFactory socketFactory = DEFAULT_MONGO_OPTIONS.getSocketFactory();
-    private boolean cursorFinalizerEnabled = DEFAULT_MONGO_OPTIONS.isCursorFinalizerEnabled();
-    private boolean alwaysUseMBeans = DEFAULT_MONGO_OPTIONS.isAlwaysUseMBeans();
+    private boolean sslEnabled = DEFAULT_MONGO_OPTIONS.isSslEnabled();
+    private boolean sslInvalidHostNameAllowed = DEFAULT_MONGO_OPTIONS.isSslInvalidHostNameAllowed();
+    private SSLContext sslContext = DEFAULT_MONGO_OPTIONS.getSslContext();
     private int heartbeatFrequency = DEFAULT_MONGO_OPTIONS.getHeartbeatFrequency();
     private int minHeartbeatFrequency = DEFAULT_MONGO_OPTIONS.getMinHeartbeatFrequency();
     private int heartbeatConnectTimeout = DEFAULT_MONGO_OPTIONS.getHeartbeatConnectTimeout();
     private int heartbeatSocketTimeout = DEFAULT_MONGO_OPTIONS.getHeartbeatSocketTimeout();
+    private int localThreshold = DEFAULT_MONGO_OPTIONS.getLocalThreshold();
     private String requiredReplicaSetName = DEFAULT_MONGO_OPTIONS.getRequiredReplicaSetName();
+    private DBDecoderFactory dbDecoderFactory = DEFAULT_MONGO_OPTIONS.getDbDecoderFactory();
+    private DBEncoderFactory dbEncoderFactory = DEFAULT_MONGO_OPTIONS.getDbEncoderFactory();
+    private boolean cursorFinalizerEnabled = DEFAULT_MONGO_OPTIONS.isCursorFinalizerEnabled();
+    private List<com.mongodb.event.ClusterListener> clusterListeners = DEFAULT_MONGO_OPTIONS.getClusterListeners();
+    private List<com.mongodb.event.CommandListener> commandListeners = DEFAULT_MONGO_OPTIONS.getCommandListeners();
+    private AutoEncryptionSettings autoEncryptionSettings = DEFAULT_MONGO_OPTIONS.getAutoEncryptionSettings();
 
-    private boolean ssl;
-    private SSLSocketFactory sslSocketFactory;
 
-    /**
-     * Set the {@link MongoClient} description.
-     *
-     * @param description
-     */
+    @Deprecated
     public void setDescription(String description) {
-        this.description = description;
+        _sLog.warn("Use of setDescription is deprecated, this setting will have no affect!");
     }
 
-    /**
-     * Set the minimum number of connections per host.
-     *
-     * @param minConnectionsPerHost
-     */
-    public void setMinConnectionsPerHost(int minConnectionsPerHost) {
-        this.minConnectionsPerHost = minConnectionsPerHost;
-    }
-
-    /**
-     * Set the number of connections allowed per host. Will block if run out. Default is 10. System property
-     * {@code MONGO.POOLSIZE} can override
-     *
-     * @param connectionsPerHost
-     */
-    public void setConnectionsPerHost(int connectionsPerHost) {
-        this.connectionsPerHost = connectionsPerHost;
-    }
-
-    /**
-     * Set the multiplier for connectionsPerHost for # of threads that can block. Default is 5. If connectionsPerHost is
-     * 10, and threadsAllowedToBlockForConnectionMultiplier is 5, then 50 threads can block more than that and an
-     * exception will be thrown.
-     *
-     * @param threadsAllowedToBlockForConnectionMultiplier
-     */
+    @Deprecated
     public void setThreadsAllowedToBlockForConnectionMultiplier(int threadsAllowedToBlockForConnectionMultiplier) {
-        this.threadsAllowedToBlockForConnectionMultiplier = threadsAllowedToBlockForConnectionMultiplier;
+        _sLog.warn("Use of setThreadsAllowedToBlockForConnectionMultiplier is deprecated, this setting will have no affect!");
     }
 
-    /**
-     * Set the max wait time of a blocking thread for a connection. Default is 12000 ms (2 minutes)
-     *
-     * @param maxWaitTime
-     */
-    public void setMaxWaitTime(int maxWaitTime) {
-        this.maxWaitTime = maxWaitTime;
-    }
-
-    /**
-     * The maximum idle time for a pooled connection.
-     *
-     * @param maxConnectionIdleTime
-     */
-    public void setMaxConnectionIdleTime(int maxConnectionIdleTime) {
-        this.maxConnectionIdleTime = maxConnectionIdleTime;
-    }
-
-    /**
-     * Set the maximum life time for a pooled connection.
-     *
-     * @param maxConnectionLifeTime
-     */
-    public void setMaxConnectionLifeTime(int maxConnectionLifeTime) {
-        this.maxConnectionLifeTime = maxConnectionLifeTime;
-    }
-
-    /**
-     * Set the connect timeout in milliseconds. 0 is default and infinite.
-     *
-     * @param connectTimeout
-     */
-    public void setConnectTimeout(int connectTimeout) {
-        this.connectTimeout = connectTimeout;
-    }
-
-    /**
-     * Set the socket timeout. 0 is default and infinite.
-     *
-     * @param socketTimeout
-     */
-    public void setSocketTimeout(int socketTimeout) {
-        this.socketTimeout = socketTimeout;
-    }
-
-    /**
-     * Set the keep alive flag, controls whether or not to have socket keep alive timeout. Defaults to false.
-     *
-     * @param socketKeepAlive
-     */
+    @Deprecated
     public void setSocketKeepAlive(boolean socketKeepAlive) {
-        this.socketKeepAlive = socketKeepAlive;
+        _sLog.warn("Use of setSocketKeepAlive is deprecated, this setting will have no affect!");
+    }
+
+    @Deprecated
+    public void setSocketFactory(SocketFactory socketFactory) {
+        _sLog.warn("Use of setSocketFactory is deprecated, this setting will have no affect!");
+    }
+
+    @Deprecated
+    public void setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
+        _sLog.warn("Use of setSslSocketFactory is deprecated, this setting will have no affect!");
     }
 
     /**
-     * Set the {@link ReadPreference}.
-     *
+     * @see com.mongodb.MongoClientOptions
+     * @param applicationName
+     */
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param compressorList
+     */
+    public void setCompressorList(List<MongoCompressor> compressorList) {
+        this.compressorList = compressorList;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
      * @param readPreference
      */
     public void setReadPreference(ReadPreference readPreference) {
@@ -150,9 +119,7 @@ public class MongoClientOptionsFactoryBean extends AbstractFactoryBean<MongoClie
     }
 
     /**
-     * Set the {@link WriteConcern} that will be the default value used when asking the MongoDbFactory for a DB
-     * object.
-     *
+     * @see com.mongodb.MongoClientOptions
      * @param writeConcern
      */
     public void setWriteConcern(WriteConcern writeConcern) {
@@ -160,20 +127,143 @@ public class MongoClientOptionsFactoryBean extends AbstractFactoryBean<MongoClie
     }
 
     /**
-     * @param socketFactory
+     * @see com.mongodb.MongoClientOptions
+     * @param retryWrites
      */
-    public void setSocketFactory(SocketFactory socketFactory) {
-        this.socketFactory = socketFactory;
-    }
-
-
-    public void setCursorFinalizerEnabled(boolean cursorFinalizerEnabled) {
-        this.cursorFinalizerEnabled = cursorFinalizerEnabled;
+    public void setRetryWrites(boolean retryWrites) {
+        this.retryWrites = retryWrites;
     }
 
     /**
-     * Set the frequency that the driver will attempt to determine the current state of each server in the cluster.
-     *
+     * @see com.mongodb.MongoClientOptions
+     * @param retryReads
+     */
+    public void setRetryReads(boolean retryReads) {
+        this.retryReads = retryReads;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param readConcern
+     */
+    public void setReadConcern(ReadConcern readConcern) {
+        this.readConcern = readConcern;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param codecRegistry
+     */
+    public void setCodecRegistry(CodecRegistry codecRegistry) {
+        this.codecRegistry = codecRegistry;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param uuidRepresentation
+     */
+    public void setUuidRepresentation(UuidRepresentation uuidRepresentation) {
+        this.uuidRepresentation = uuidRepresentation;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param serverSelector
+     */
+    public void setServerSelector(ServerSelector serverSelector) {
+        this.serverSelector = serverSelector;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param minConnectionsPerHost
+     */
+    public void setMinConnectionsPerHost(int minConnectionsPerHost) {
+        this.minConnectionsPerHost = minConnectionsPerHost;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param connectionsPerHost
+     */
+    public void setConnectionsPerHost(int connectionsPerHost) {
+        this.connectionsPerHost = connectionsPerHost;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param serverSelectionTimeout
+     */
+    public void setServerSelectionTimeout(int serverSelectionTimeout) {
+        this.serverSelectionTimeout = serverSelectionTimeout;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param maxWaitTime
+     */
+    public void setMaxWaitTime(int maxWaitTime) {
+        this.maxWaitTime = maxWaitTime;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param maxConnectionIdleTime
+     */
+    public void setMaxConnectionIdleTime(int maxConnectionIdleTime) {
+        this.maxConnectionIdleTime = maxConnectionIdleTime;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param maxConnectionLifeTime
+     */
+    public void setMaxConnectionLifeTime(int maxConnectionLifeTime) {
+        this.maxConnectionLifeTime = maxConnectionLifeTime;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param connectTimeout
+     */
+    public void setConnectTimeout(int connectTimeout) {
+        this.connectTimeout = connectTimeout;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param socketTimeout
+     */
+    public void setSocketTimeout(int socketTimeout) {
+        this.socketTimeout = socketTimeout;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param sslEnabled
+     */
+    public void setSslEnabled(boolean sslEnabled) {
+        this.sslEnabled = sslEnabled;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param sslInvalidHostNameAllowed
+     */
+    public void setSslInvalidHostNameAllowed(boolean sslInvalidHostNameAllowed) {
+        this.sslInvalidHostNameAllowed = sslInvalidHostNameAllowed;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param sslContext
+     */
+    public void setSslContext(SSLContext sslContext) {
+        this.sslContext = sslContext;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
      * @param heartbeatFrequency
      */
     public void setHeartbeatFrequency(int heartbeatFrequency) {
@@ -181,9 +271,7 @@ public class MongoClientOptionsFactoryBean extends AbstractFactoryBean<MongoClie
     }
 
     /**
-     * In the event that the driver has to frequently re-check a server's availability, it will wait at least this long
-     * since the previous check to avoid wasted effort.
-     *
+     * @see com.mongodb.MongoClientOptions
      * @param minHeartbeatFrequency
      */
     public void setMinHeartbeatFrequency(int minHeartbeatFrequency) {
@@ -191,8 +279,7 @@ public class MongoClientOptionsFactoryBean extends AbstractFactoryBean<MongoClie
     }
 
     /**
-     * Set the connect timeout for connections used for the cluster heartbeat.
-     *
+     * @see com.mongodb.MongoClientOptions
      * @param heartbeatConnectTimeout
      */
     public void setHeartbeatConnectTimeout(int heartbeatConnectTimeout) {
@@ -200,8 +287,7 @@ public class MongoClientOptionsFactoryBean extends AbstractFactoryBean<MongoClie
     }
 
     /**
-     * Set the socket timeout for connections used for the cluster heartbeat.
-     *
+     * @see com.mongodb.MongoClientOptions
      * @param heartbeatSocketTimeout
      */
     public void setHeartbeatSocketTimeout(int heartbeatSocketTimeout) {
@@ -209,8 +295,15 @@ public class MongoClientOptionsFactoryBean extends AbstractFactoryBean<MongoClie
     }
 
     /**
-     * Configures the name of the replica set.
-     *
+     * @see com.mongodb.MongoClientOptions
+     * @param localThreshold
+     */
+    public void setLocalThreshold(int localThreshold) {
+        this.localThreshold = localThreshold;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
      * @param requiredReplicaSetName
      */
     public void setRequiredReplicaSetName(String requiredReplicaSetName) {
@@ -218,63 +311,98 @@ public class MongoClientOptionsFactoryBean extends AbstractFactoryBean<MongoClie
     }
 
     /**
-     * This controls if the driver should us an SSL connection. Defaults to |@literal false}.
-     *
-     * @param ssl
+     * @see com.mongodb.MongoClientOptions
+     * @param dbDecoderFactory
      */
-    public void setSsl(boolean ssl) {
-        this.ssl = ssl;
+    public void setDbDecoderFactory(DBDecoderFactory dbDecoderFactory) {
+        this.dbDecoderFactory = dbDecoderFactory;
     }
 
     /**
-     * Set the {@link SSLSocketFactory} to use for the {@literal SSL} connection. If none is configured here,
-     * {@link SSLSocketFactory#getDefault()} will be used.
-     *
-     * @param sslSocketFactory
+     * @see com.mongodb.MongoClientOptions
+     * @param dbEncoderFactory
      */
-    public void setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
-        this.sslSocketFactory = sslSocketFactory;
+    public void setDbEncoderFactory(DBEncoderFactory dbEncoderFactory) {
+        this.dbEncoderFactory = dbEncoderFactory;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param cursorFinalizerEnabled
+     */
+    public void setCursorFinalizerEnabled(boolean cursorFinalizerEnabled) {
+        this.cursorFinalizerEnabled = cursorFinalizerEnabled;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param clusterListeners
+     */
+    public void setClusterListeners(List<ClusterListener> clusterListeners) {
+        this.clusterListeners = clusterListeners;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param commandListeners
+     */
+    public void setCommandListeners(List<CommandListener> commandListeners) {
+        this.commandListeners = commandListeners;
+    }
+
+    /**
+     * @see com.mongodb.MongoClientOptions
+     * @param autoEncryptionSettings
+     */
+    public void setAutoEncryptionSettings(AutoEncryptionSettings autoEncryptionSettings) {
+        this.autoEncryptionSettings = autoEncryptionSettings;
+    }
+
+    /**
      * @see org.springframework.beans.factory.config.AbstractFactoryBean#createInstance()
      */
     @Override
-    protected MongoClientOptions createInstance() throws Exception {
+    protected MongoClientOptions createInstance() {
 
-        SocketFactory socketFactoryToUse = ssl ? (sslSocketFactory != null ? sslSocketFactory : SSLSocketFactory
-                .getDefault()) : this.socketFactory;
-
-        return MongoClientOptions.builder() //
-                .alwaysUseMBeans(this.alwaysUseMBeans) //
-                .connectionsPerHost(this.connectionsPerHost) //
-                .connectTimeout(connectTimeout) //
-                .cursorFinalizerEnabled(cursorFinalizerEnabled) //
-                .dbDecoderFactory(dbDecoderFactory) //
-                .dbEncoderFactory(dbEncoderFactory) //
-                .description(description) //
-                .heartbeatConnectTimeout(heartbeatConnectTimeout) //
-                .heartbeatFrequency(heartbeatFrequency) //
-                .heartbeatSocketTimeout(heartbeatSocketTimeout) //
-                .maxConnectionIdleTime(maxConnectionIdleTime) //
-                .maxConnectionLifeTime(maxConnectionLifeTime) //
-                .maxWaitTime(maxWaitTime) //
-                .minConnectionsPerHost(minConnectionsPerHost) //
-                .minHeartbeatFrequency(minHeartbeatFrequency) //
-                .readPreference(readPreference) //
-                .requiredReplicaSetName(requiredReplicaSetName) //
-                .socketFactory(socketFactoryToUse) //
-                .socketKeepAlive(socketKeepAlive) //
-                .socketTimeout(socketTimeout) //
-                .threadsAllowedToBlockForConnectionMultiplier(threadsAllowedToBlockForConnectionMultiplier) //
-                .writeConcern(writeConcern).build();
+        return MongoClientOptions.builder()
+                .applicationName(this.applicationName)
+                .compressorList(this.compressorList)
+                .readPreference(this.readPreference)
+                .writeConcern(this.writeConcern)
+                .retryWrites(this.retryWrites)
+                .retryReads(this.retryReads)
+                .readConcern(this.readConcern)
+                .codecRegistry(this.codecRegistry)
+                .uuidRepresentation(this.uuidRepresentation)
+                .serverSelector(this.serverSelector)
+                .minConnectionsPerHost(this.minConnectionsPerHost)
+                .connectionsPerHost(this.connectionsPerHost)
+                .serverSelectionTimeout(this.serverSelectionTimeout)
+                .maxWaitTime(this.maxWaitTime)
+                .maxConnectionIdleTime(this.maxConnectionIdleTime)
+                .maxConnectionLifeTime(this.maxConnectionLifeTime)
+                .connectTimeout(this.connectTimeout)
+                .socketTimeout(this.socketTimeout)
+                .sslEnabled(this.sslEnabled)
+                .sslInvalidHostNameAllowed(this.sslInvalidHostNameAllowed)
+                .sslContext(this.sslContext)
+                .heartbeatFrequency(this.heartbeatFrequency)
+                .minHeartbeatFrequency(this.minHeartbeatFrequency)
+                .heartbeatConnectTimeout(this.heartbeatConnectTimeout)
+                .heartbeatSocketTimeout(this.heartbeatSocketTimeout)
+                .localThreshold(this.localThreshold)
+                .requiredReplicaSetName(this.requiredReplicaSetName)
+                .dbDecoderFactory(this.dbDecoderFactory)
+                .dbEncoderFactory(this.dbEncoderFactory)
+                .cursorFinalizerEnabled(this.cursorFinalizerEnabled)
+                .autoEncryptionSettings(this.autoEncryptionSettings)
+                .build();
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.springframework.beans.factory.FactoryBean#getObjectType()
      */
+    @Override
     public Class<?> getObjectType() {
         return MongoClientOptions.class;
     }

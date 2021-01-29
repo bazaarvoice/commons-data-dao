@@ -9,6 +9,7 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.gridfs.GridFS;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +32,7 @@ public class MongoAccessServiceImpl implements MongoAccessService {
     private boolean _useGridFS = false;
     private String _gridFSDatabaseName;
     private MongoClientOptions _mongoClientOptions = MongoClientOptions.builder().build();
+    private MongoCredential _mongoCredentials;
 
     private String _sequenceCollectionName = DEFAULT_SEQUENCE_COLLECTION_NAME;
 
@@ -60,13 +62,21 @@ public class MongoAccessServiceImpl implements MongoAccessService {
     }
 
     /**
-     * MongoClientOptions to pass into the mongo constructor
+     * MongoClientOptions to pass into the mongo client constructor
      * @see com.mongodb.MongoClientOptions
-     *
-     * @param mongoClientOptions the mongo options to use
+     * @param mongoClientOptions
      */
     public void setMongoClientOptions(MongoClientOptions mongoClientOptions) {
         _mongoClientOptions = mongoClientOptions;
+    }
+
+    /**
+     * Optional credentials to configure on the mongo client
+     * @see com.mongodb.MongoCredential
+     * @param credentials
+     */
+    public void setMongoCredential(MongoCredential credentials) {
+        _mongoCredentials = credentials;
     }
 
     @PostConstruct
@@ -87,7 +97,12 @@ public class MongoAccessServiceImpl implements MongoAccessService {
             _sLog.info("Initializing mongoDB '" + _databaseName + "' with servers: " + serverAddressList);
         }
 
-        _mongoClient = new MongoClient(serverAddressList, _mongoClientOptions);
+
+        if(_mongoCredentials == null) {
+            _mongoClient = new MongoClient(serverAddressList, _mongoClientOptions);
+        } else {
+            _mongoClient = new MongoClient(serverAddressList, _mongoCredentials, _mongoClientOptions);
+        }
 
         if (_useGridFS) {
             if (StringUtils.isNotBlank(_gridFSDatabaseName)) {

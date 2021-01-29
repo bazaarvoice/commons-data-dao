@@ -1,6 +1,6 @@
 package com.bazaarvoice.commons.data.dao.json;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
@@ -77,7 +77,7 @@ public class GenericDelegatingJSONMarshaller<T> extends AbstractDelegatingJSONMa
 
         @Override
         public String toString() {
-            return Objects.toStringHelper(this).
+            return MoreObjects.toStringHelper(this).
                     add("_name", _name).
                     add("_delegateItemClass", _delegateItemClass).
                     toString();
