@@ -45,7 +45,7 @@ public class MongoClientOptionsFactoryBean extends AbstractFactoryBean<MongoClie
     private UuidRepresentation uuidRepresentation = DEFAULT_MONGO_OPTIONS.getUuidRepresentation();
     private ServerSelector serverSelector = DEFAULT_MONGO_OPTIONS.getServerSelector();
     private int minConnectionsPerHost = DEFAULT_MONGO_OPTIONS.getMinConnectionsPerHost();
-    private int maxConnectionsPerHost = DEFAULT_MONGO_OPTIONS.getConnectionsPerHost();
+    private int connectionsPerHost = DEFAULT_MONGO_OPTIONS.getConnectionsPerHost();
     private int serverSelectionTimeout = DEFAULT_MONGO_OPTIONS.getServerSelectionTimeout();
     private int maxWaitTime = DEFAULT_MONGO_OPTIONS.getMaxWaitTime();
     private int maxConnectionIdleTime = DEFAULT_MONGO_OPTIONS.getMaxConnectionIdleTime();
@@ -68,6 +68,11 @@ public class MongoClientOptionsFactoryBean extends AbstractFactoryBean<MongoClie
     private List<com.mongodb.event.CommandListener> commandListeners = DEFAULT_MONGO_OPTIONS.getCommandListeners();
     private AutoEncryptionSettings autoEncryptionSettings = DEFAULT_MONGO_OPTIONS.getAutoEncryptionSettings();
 
+
+    @Deprecated
+    public void setDescription(String description) {
+        _sLog.warn("Use of setDescription is deprecated, this setting will have no affect!");
+    }
 
     @Deprecated
     public void setThreadsAllowedToBlockForConnectionMultiplier(int threadsAllowedToBlockForConnectionMultiplier) {
@@ -179,10 +184,10 @@ public class MongoClientOptionsFactoryBean extends AbstractFactoryBean<MongoClie
 
     /**
      * @see com.mongodb.MongoClientOptions
-     * @param maxConnectionsPerHost
+     * @param connectionsPerHost
      */
-    public void setMaxConnectionsPerHost(int maxConnectionsPerHost) {
-        this.maxConnectionsPerHost = maxConnectionsPerHost;
+    public void setConnectionsPerHost(int connectionsPerHost) {
+        this.connectionsPerHost = connectionsPerHost;
     }
 
     /**
@@ -371,7 +376,7 @@ public class MongoClientOptionsFactoryBean extends AbstractFactoryBean<MongoClie
                 .uuidRepresentation(this.uuidRepresentation)
                 .serverSelector(this.serverSelector)
                 .minConnectionsPerHost(this.minConnectionsPerHost)
-                .connectionsPerHost(this.maxConnectionsPerHost)
+                .connectionsPerHost(this.connectionsPerHost)
                 .serverSelectionTimeout(this.serverSelectionTimeout)
                 .maxWaitTime(this.maxWaitTime)
                 .maxConnectionIdleTime(this.maxConnectionIdleTime)
