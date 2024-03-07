@@ -33,6 +33,8 @@ public interface CriteriaDAO<T, C extends Criteria<T, C>, S extends SortOrder<T,
 
     Iterable<T> find(@Nullable C criteria, @Nullable S sortOrder, @Nullable Map<String, Integer> keys);
 
+    Iterable<T> find(@Nullable C criteria, @Nullable S sortOrder, @Nullable Map<String, Integer> keys, int startIndex, int maxResults);
+
     /** Returns a limited set of objects that match the criteria. */
     QueryResults<T> find(@Nullable C criteria, @Nullable S sortOrder, int startIndex, int maxResults);
 

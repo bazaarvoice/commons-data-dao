@@ -10,7 +10,6 @@ import com.bazaarvoice.commons.data.model.QueryResults;
 import com.bazaarvoice.commons.data.model.SimpleQueryResults;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Timed;
-import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -33,11 +32,8 @@ public abstract class AbstractMongoCriteriaDAO<T extends Model, C extends Criter
     @ExceptionMetered
     @Override
     public int findCount(@Nullable C criteria) {
-        DBCursor dbCursor = getPrimaryCollection().find(convertCriteriaToDBObject(criteria));
-        try {
+        try (DBCursor dbCursor = getPrimaryCollection().find(convertCriteriaToDBObject(criteria))) {
             return dbCursor.count();
-        } finally {
-            dbCursor.close();
         }
     }
 
@@ -45,27 +41,21 @@ public abstract class AbstractMongoCriteriaDAO<T extends Model, C extends Criter
     @ExceptionMetered
     @Override
     public Iterable<String> findIDs(@Nullable C criteria, @Nullable S sortOrder) {
-        DBCursor dbCursor = getPrimaryCollection().find(convertCriteriaToDBObject(criteria), new FieldsMongoDBObject()).sort(convertSortOrderToDBObject(sortOrder));
 
-        try {
+        try (DBCursor dbCursor = getPrimaryCollection().find(convertCriteriaToDBObject(criteria), new FieldsMongoDBObject())
+                                                       .sort(convertSortOrderToDBObject(sortOrder))) {
             logQueryDetails(dbCursor);
 
-            return Iterables.transform(dbCursor, new Function<DBObject, String>() {
-                @Override
-                public String apply(DBObject dbObject) {
-                    Object id = dbObject.get(MongoDBObject.ID_FIELD);
-                    return id != null ? id.toString() : null;
-                }
+            return Iterables.transform(dbCursor, dbObject -> {
+                Object id = dbObject.get(MongoDBObject.ID_FIELD);
+                return id != null ? id.toString() : null;
             });
-        } finally {
-            dbCursor.close();
         }
     }
 
     @Timed
     @ExceptionMetered
     @Override
-    @SuppressWarnings("unchecked")
     public T findOne(@Nullable C criteria, @Nullable S sortOrder) {
         return findOne(criteria, sortOrder, null);
     }
@@ -73,29 +63,22 @@ public abstract class AbstractMongoCriteriaDAO<T extends Model, C extends Criter
     @Timed
     @ExceptionMetered
     @Override
-    @SuppressWarnings("unchecked")
     public T findOne(@Nullable C criteria, @Nullable S sortOrder, @Nullable Map<String, Integer> keys) {
-        DBObject dbObjectKeys = new MongoDBObject();
-        if (keys != null) {
-            dbObjectKeys.putAll(keys);
-        }
+        DBObject dbObjectKeys = buildProjectionCondition(keys);
 
-        DBCursor dbCursor = getPrimaryCollection().find(convertCriteriaToDBObject(criteria), dbObjectKeys).sort(convertSortOrderToDBObject(sortOrder)).limit(1);
-
-        try {
+        try (DBCursor dbCursor = getPrimaryCollection().find(convertCriteriaToDBObject(criteria), dbObjectKeys)
+                                                       .sort(convertSortOrderToDBObject(sortOrder))
+                                                       .limit(1)) {
             logQueryDetails(dbCursor);
 
             Iterator<DBObject> iter = dbCursor.iterator();
-            return iter.hasNext() ? (T) _modelMarshaller.fromDBObject(new MongoDBObject(iter.next())) : null;
-        } finally {
-            dbCursor.close();
+            return iter.hasNext() ? _modelMarshaller.fromDBObject(new MongoDBObject<>(iter.next())) : null;
         }
     }
 
     @Timed
     @ExceptionMetered
     @Override
-    @SuppressWarnings("unchecked")
     public Iterable<T> find(@Nullable C criteria, @Nullable S sortOrder) {
         return find(criteria, sortOrder, null);
     }
@@ -103,29 +86,33 @@ public abstract class AbstractMongoCriteriaDAO<T extends Model, C extends Criter
     @Timed
     @ExceptionMetered
     @Override
-    @SuppressWarnings("unchecked")
     public Iterable<T> find(@Nullable C criteria, @Nullable S sortOrder, @Nullable Map<String, Integer> keys) {
-        DBObject dbObjectKeys = new MongoDBObject();
-        if (keys != null) {
-            dbObjectKeys.putAll(keys);
-        }
+        DBObject dbObjectKeys = buildProjectionCondition(keys);
 
-        DBCursor dbCursor = getPrimaryCollection().find(convertCriteriaToDBObject(criteria), dbObjectKeys);
-        dbCursor.sort(convertSortOrderToDBObject(sortOrder));
-
-        try {
+        try (DBCursor dbCursor = getPrimaryCollection().find(convertCriteriaToDBObject(criteria), dbObjectKeys)
+                                                       .sort(convertSortOrderToDBObject(sortOrder))) {
             logQueryDetails(dbCursor);
 
-            return Iterables.transform(dbCursor, new Function<DBObject, T>() {
-                @Override
-                public T apply(DBObject dbObject) {
-                    return (T) _modelMarshaller.fromDBObject(new MongoDBObject(dbObject));
-                }
-            });
-        } finally {
-            dbCursor.close();
+            return Iterables.transform(dbCursor, dbObject -> _modelMarshaller.fromDBObject(new MongoDBObject<>(dbObject)));
         }
     }
+
+    @Timed
+    @ExceptionMetered
+    @Override
+    public Iterable<T> find(@Nullable C criteria, @Nullable S sortOrder, @Nullable Map<String, Integer> keys, int startIndex, int maxResults) {
+        DBObject dbObjectKeys = buildProjectionCondition(keys);
+
+        try (DBCursor dbCursor = getPrimaryCollection().find(convertCriteriaToDBObject(criteria), dbObjectKeys)
+                                                       .sort(convertSortOrderToDBObject(sortOrder))
+                                                       .skip(startIndex)
+                                                       .limit(maxResults)) {
+            logQueryDetails(dbCursor);
+
+            return Iterables.transform(dbCursor, dbObject -> _modelMarshaller.fromDBObject(new MongoDBObject<>(dbObject)));
+        }
+    }
+
 
     @Timed
     @ExceptionMetered
@@ -138,29 +125,22 @@ public abstract class AbstractMongoCriteriaDAO<T extends Model, C extends Criter
     @Timed
     @ExceptionMetered
     @Override
-    @SuppressWarnings("unchecked")
     public QueryResults<T> find(@Nullable C criteria, @Nullable S sortOrder, int startIndex, int maxResults, @Nullable Map<String, Integer> keys) {
-        DBObject dbObjectKeys = new MongoDBObject();
-        if (keys != null) {
-            dbObjectKeys.putAll(keys);
-        }
+        DBObject dbObjectKeys = buildProjectionCondition(keys);
 
-        DBCursor dbCursor = getPrimaryCollection().find(convertCriteriaToDBObject(criteria), dbObjectKeys);
-        dbCursor.sort(convertSortOrderToDBObject(sortOrder)).skip(startIndex).limit(maxResults);
-
-        try {
+        try (DBCursor dbCursor = getPrimaryCollection().find(convertCriteriaToDBObject(criteria), dbObjectKeys)
+                                                       .sort(convertSortOrderToDBObject(sortOrder))
+                                                       .skip(startIndex)
+                                                       .limit(maxResults)) {
             logQueryDetails(dbCursor);
 
             List<T> list = Lists.newArrayList();
             for (DBObject dbObject : dbCursor) {
-                list.add((T) _modelMarshaller.fromDBObject(new MongoDBObject(dbObject)));
+                list.add(_modelMarshaller.fromDBObject(new MongoDBObject<>(dbObject)));
             }
-            return new SimpleQueryResults<T>(list, startIndex, dbCursor.count());
-        } finally {
-            dbCursor.close();
+            return new SimpleQueryResults<>(list, startIndex, dbCursor.count());
         }
     }
-
 
     @Timed
     @ExceptionMetered
@@ -223,5 +203,22 @@ public abstract class AbstractMongoCriteriaDAO<T extends Model, C extends Criter
 
         MongoSortOrder mongoSortOrder = (MongoSortOrder) sortOrder;
         return mongoSortOrder.toDBObject();
+    }
+
+    /**
+     * Convert the given map to a DB object representing fields that should or should not be projected from an underlying Mongo statement
+     * <p>
+     * A value of "1" against key entries can be used to include specific fields in the response
+     * <p>
+     * A value of "0" against key entries can be used to exclude specific fields in the response
+     * @param keys Map of field names against target visibility
+     */
+    private DBObject buildProjectionCondition(@Nullable Map<String, Integer> keys) {
+        final DBObject projection = new MongoDBObject<>();
+        if (keys != null) {
+            projection.putAll(keys);
+        }
+
+        return projection;
     }
 }
