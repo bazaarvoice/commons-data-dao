@@ -12,7 +12,7 @@
 
     <groupId>com.bazaarvoice.commons.data</groupId>
     <artifactId>data-parent</artifactId>
-    <version>4.5</version>
+    <version>4.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Bazaarvoice Commons Data DAO Parent</name>
@@ -161,8 +161,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
-  <scm>
-    <tag>commons-data-dao-4.5</tag>
-  </scm>
 </project>
