@@ -1,5 +1,6 @@
 package com.bazaarvoice.commons.data.dao;
 
+import com.bazaarvoice.commons.data.model.QueryResultsBatch;
 import com.bazaarvoice.commons.data.model.QueryResults;
 
 import javax.annotation.Nullable;
@@ -33,7 +34,9 @@ public interface CriteriaDAO<T, C extends Criteria<T, C>, S extends SortOrder<T,
 
     Iterable<T> find(@Nullable C criteria, @Nullable S sortOrder, @Nullable Map<String, Integer> keys);
 
-    Iterable<T> find(@Nullable C criteria, @Nullable S sortOrder, @Nullable Map<String, Integer> keys, int startIndex, int maxResults);
+    Iterable<T> findResultsForPage(@Nullable C criteria, @Nullable S sortOrder, @Nullable Map<String, Integer> keys, int startIndex, int maxResults);
+
+    QueryResultsBatch<T> findBatch(@Nullable C criteria, @Nullable S sortOrder, @Nullable Map<String, Integer> keys, int startIndex, int maxResults);
 
     /** Returns a limited set of objects that match the criteria. */
     QueryResults<T> find(@Nullable C criteria, @Nullable S sortOrder, int startIndex, int maxResults);
