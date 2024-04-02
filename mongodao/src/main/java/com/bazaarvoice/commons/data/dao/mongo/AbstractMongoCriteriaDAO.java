@@ -5,6 +5,7 @@ import com.bazaarvoice.commons.data.dao.CriteriaDAO;
 import com.bazaarvoice.commons.data.dao.SortOrder;
 import com.bazaarvoice.commons.data.dao.mongo.dbo.FieldsMongoDBObject;
 import com.bazaarvoice.commons.data.dao.mongo.dbo.MongoDBObject;
+import com.bazaarvoice.commons.data.model.QueryResultsBatch;
 import com.bazaarvoice.commons.data.model.Model;
 import com.bazaarvoice.commons.data.model.QueryResults;
 import com.bazaarvoice.commons.data.model.SimpleQueryResults;
@@ -100,7 +101,11 @@ public abstract class AbstractMongoCriteriaDAO<T extends Model, C extends Criter
     @Timed
     @ExceptionMetered
     @Override
-    public Iterable<T> find(@Nullable C criteria, @Nullable S sortOrder, @Nullable Map<String, Integer> keys, int startIndex, int maxResults) {
+    public Iterable<T> findResultsForPage(@Nullable C criteria,
+                                          @Nullable S sortOrder,
+                                          @Nullable Map<String, Integer> keys,
+                                          int startIndex,
+                                          int maxResults) {
         DBObject dbObjectKeys = buildProjectionCondition(keys);
 
         try (DBCursor dbCursor = getPrimaryCollection().find(convertCriteriaToDBObject(criteria), dbObjectKeys)
@@ -110,6 +115,31 @@ public abstract class AbstractMongoCriteriaDAO<T extends Model, C extends Criter
             logQueryDetails(dbCursor);
 
             return Iterables.transform(dbCursor, dbObject -> _modelMarshaller.fromDBObject(new MongoDBObject<>(dbObject)));
+        }
+    }
+
+    @Timed
+    @ExceptionMetered
+    @Override
+    public QueryResultsBatch<T> findBatch(@Nullable C criteria,
+                                          @Nullable S sortOrder,
+                                          @Nullable Map<String, Integer> keys,
+                                          int startIndex,
+                                          int maxResults) {
+        DBObject dbObjectKeys = buildProjectionCondition(keys);
+
+        try (DBCursor dbCursor = getPrimaryCollection().find(convertCriteriaToDBObject(criteria), dbObjectKeys)
+                                                       .sort(convertSortOrderToDBObject(sortOrder))
+                                                       .skip(startIndex)
+                                                       .limit(maxResults)) {
+            logQueryDetails(dbCursor);
+
+            return new QueryResultsBatch<>(
+                    Iterables.transform(dbCursor, dbObject -> _modelMarshaller.fromDBObject(new MongoDBObject<>(dbObject))),
+                    startIndex,
+                    maxResults,
+                    dbCursor.count()
+            );
         }
     }
 
