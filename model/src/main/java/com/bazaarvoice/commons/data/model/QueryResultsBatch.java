@@ -3,13 +3,13 @@ package com.bazaarvoice.commons.data.model;
 public class QueryResultsBatch<T> {
     private Iterable<T> _values;
     private int _startIndex;
-    private int _maxBatchSize;
+    private int _limit;
     private int _total;
 
-    public QueryResultsBatch(Iterable<T> values, int startIndex, int maxBatchSize, int total) {
+    public QueryResultsBatch(Iterable<T> values, int startIndex, int limit, int total) {
         _values = values;
         _startIndex = startIndex;
-        _maxBatchSize = maxBatchSize;
+        _limit = limit;
         _total = total;
     }
 
@@ -27,8 +27,8 @@ public class QueryResultsBatch<T> {
     /**
      * @return The maximum number of results that could be available within the values iterable, which will be anywhere between 0 and this number
      */
-    public int getMaxBatchSize() {
-        return _maxBatchSize;
+    public int getLimit() {
+        return _limit;
     }
 
     /**
@@ -36,7 +36,7 @@ public class QueryResultsBatch<T> {
      * <p></p>
      * If there are multiple pages of results available, this number will exceed the size of the current batch available via this wrapper
      */
-    public int getTotalResultsForQuery() {
+    public int getTotal() {
         return _total;
     }
 }

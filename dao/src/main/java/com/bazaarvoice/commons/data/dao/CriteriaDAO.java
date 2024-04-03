@@ -34,7 +34,11 @@ public interface CriteriaDAO<T, C extends Criteria<T, C>, S extends SortOrder<T,
 
     Iterable<T> find(@Nullable C criteria, @Nullable S sortOrder, @Nullable Map<String, Integer> keys);
 
+    Iterable<T> findResultsForPage(@Nullable C criteria, @Nullable S sortOrder, int startIndex, int maxResults);
+
     Iterable<T> findResultsForPage(@Nullable C criteria, @Nullable S sortOrder, @Nullable Map<String, Integer> keys, int startIndex, int maxResults);
+
+    QueryResultsBatch<T> findBatch(@Nullable C criteria, @Nullable S sortOrder, int startIndex, int maxResults);
 
     QueryResultsBatch<T> findBatch(@Nullable C criteria, @Nullable S sortOrder, @Nullable Map<String, Integer> keys, int startIndex, int maxResults);
 
