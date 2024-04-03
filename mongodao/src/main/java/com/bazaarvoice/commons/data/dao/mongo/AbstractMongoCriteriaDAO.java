@@ -135,7 +135,7 @@ public abstract class AbstractMongoCriteriaDAO<T extends Model, C extends Criter
                                           @Nullable S sortOrder,
                                           int startIndex,
                                           int maxResults) {
-        return findBatch(criteria, sortOrder, startIndex, maxResults);
+        return findBatch(criteria, sortOrder, null, startIndex, maxResults);
     }
 
     @Timed
