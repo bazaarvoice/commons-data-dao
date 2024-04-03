@@ -103,6 +103,16 @@ public abstract class AbstractMongoCriteriaDAO<T extends Model, C extends Criter
     @Override
     public Iterable<T> findResultsForPage(@Nullable C criteria,
                                           @Nullable S sortOrder,
+                                          int startIndex,
+                                          int maxResults) {
+        return findResultsForPage(criteria, sortOrder, null, startIndex, maxResults);
+    }
+
+    @Timed
+    @ExceptionMetered
+    @Override
+    public Iterable<T> findResultsForPage(@Nullable C criteria,
+                                          @Nullable S sortOrder,
                                           @Nullable Map<String, Integer> keys,
                                           int startIndex,
                                           int maxResults) {
@@ -116,6 +126,16 @@ public abstract class AbstractMongoCriteriaDAO<T extends Model, C extends Criter
 
             return Iterables.transform(dbCursor, dbObject -> _modelMarshaller.fromDBObject(new MongoDBObject<>(dbObject)));
         }
+    }
+
+    @Timed
+    @ExceptionMetered
+    @Override
+    public QueryResultsBatch<T> findBatch(@Nullable C criteria,
+                                          @Nullable S sortOrder,
+                                          int startIndex,
+                                          int maxResults) {
+        return findBatch(criteria, sortOrder, startIndex, maxResults);
     }
 
     @Timed
